@@ -7,6 +7,7 @@ import { ThirdwebProvider } from "@thirdweb-dev/react";
 import config from "./config.json";
 import "./styles/globals.css";
 import { BrowserRouter as Router } from "react-router-dom";
+import { StateContextProvider } from "./context/profile";
 
 // This is the chainId your dApp will work on.
 // const activeChainId = ChainId.Mainnet;
@@ -18,7 +19,9 @@ root.render(
   <React.StrictMode>
     <ThirdwebProvider desiredChainId={chainId}>
       <Router>
-        <App />
+        <StateContextProvider>
+          <App />
+        </StateContextProvider>
       </Router>
     </ThirdwebProvider>
   </React.StrictMode>
