@@ -4,8 +4,9 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 // import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
-import config from './config.json';
+import config from "./config.json";
 import "./styles/globals.css";
+import { BrowserRouter as Router } from "react-router-dom";
 
 // This is the chainId your dApp will work on.
 // const activeChainId = ChainId.Mainnet;
@@ -16,7 +17,9 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <ThirdwebProvider desiredChainId={chainId}>
-      <App />
+      <Router>
+        <App />
+      </Router>
     </ThirdwebProvider>
   </React.StrictMode>
 );

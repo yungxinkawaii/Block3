@@ -1,6 +1,5 @@
 import { ConnectWallet } from "@thirdweb-dev/react";
-import Navbar from "./components/Navbar";
-import "./styles/Home.css";
+import "../styles/Home.css";
 
 export default function Home() {
   return (

@@ -1,8 +1,11 @@
 import { ConnectWallet } from "@thirdweb-dev/react";
 import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
+import Home from "./pages/Home";
+import { Route, Routes } from "react-router-dom";
 import "./styles/Home.css";
 
-export default function Home() {
+function HomeOri() {
   return (
     <div className="container">
       {/* <Navbar /> */}
@@ -49,3 +52,20 @@ export default function Home() {
     </div>
   );
 }
+
+const App = () => {
+  return (
+    <div className="container">
+      <div className="container">
+        <Navbar />
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </div>
+    </div>
+  );
+};
+
+export default App;
