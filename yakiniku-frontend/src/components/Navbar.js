@@ -14,6 +14,9 @@ const Navbar = () => {
         <li>
           <Link to="/create-profile">Create Profile</Link>
         </li>
+        <li>
+          <Link to="/update-profile">Update Profile</Link>
+        </li>
       </ul>
     </nav>
   );
