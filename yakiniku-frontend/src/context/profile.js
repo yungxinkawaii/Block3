@@ -18,6 +18,10 @@ export const StateContextProvider = ({ children }) => {
     contract,
     "createProfile"
   );
+  const { mutateAsync: updateProfile } = useContractWrite(
+    contract,
+    "updateProfile"
+  );
 
   const address = useAddress();
   const connect = useMetamask();
@@ -30,6 +34,19 @@ export const StateContextProvider = ({ children }) => {
       console.log("contract call success", data);
     } catch (error) {
       console.log("contract call failure", error);
+      console.log("address already exist.");
+    }
+  };
+
+  const putProfile = async (form) => {
+    try {
+      console.log(form.name);
+      const data = await updateProfile([form.name, form.bio, form.image]);
+
+      console.log("contract call success", data);
+    } catch (error) {
+      console.log("contract call failure", error);
+      console.log("profile does not exist.");
     }
   };
 
@@ -55,6 +72,7 @@ export const StateContextProvider = ({ children }) => {
         contract,
         connect,
         createProfile: publishProfile,
+        updateProfile: putProfile,
         getProfile,
       }}
     >
