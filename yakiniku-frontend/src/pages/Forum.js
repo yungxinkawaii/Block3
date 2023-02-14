@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useForumContext } from "../context/forum";
 import CommentCard from "../components/CommentCard";
+import { ConnectWallet } from "@thirdweb-dev/react";
 
 const Forum = () => {
   const location = useLocation();
@@ -33,6 +34,9 @@ const Forum = () => {
 
   return (
     <div>
+      <div className="connect">
+        <ConnectWallet />
+      </div>
       <h1>{forum.title}</h1>
       <img src={forum.image} alt={forum.title} />
       <p>{forum.description}</p>
