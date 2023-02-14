@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Card from "../components/ForumCard";
+import { useNavigate } from "react-router-dom";
+
 import { useForumContext } from "../context/forum";
 
 const Dashboard = () => {
@@ -15,6 +17,12 @@ const Dashboard = () => {
     fetchData();
   });
 
+  const navigate = useNavigate();
+
+  const handleNavigate = (forum) => {
+    navigate(`/forum/${forum.id}`, { state: forum });
+  };
+
   return (
     <div className="dashboard">
       {forums.map((forum) => (
@@ -23,6 +31,7 @@ const Dashboard = () => {
           title={forum.title}
           description={forum.description}
           image={forum.image}
+          onClick={() => handleNavigate(forum)}
         />
       ))}
     </div>

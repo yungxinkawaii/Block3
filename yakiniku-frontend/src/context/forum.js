@@ -35,9 +35,8 @@ export const ForumContextProvider = ({ children }) => {
   //     }
   //   };
 
-  const getAllForums = async (userAddress) => {
+  const getAllForums = async () => {
     const forums = await contract.call("getAllForums");
-    console.log(forums);
 
     const parsedForums = forums.map((forum, i) => ({
       id: forum.id.toNumber(),
@@ -48,7 +47,21 @@ export const ForumContextProvider = ({ children }) => {
       image: forum.image,
     }));
 
+    console.log(parsedForums);
     return parsedForums;
+  };
+
+  const getForumComments = async (forumId) => {
+    const comments = await contract.call("getForumComments", forumId);
+
+    const parsedComments = comments.map((comment, i) => ({
+        text: comment.text,
+        date: new Date(comment.date.toNumber() * 1000).toString(),
+        creator: comment.creator,
+      }));
+
+    console.log(parsedComments);
+    return parsedComments;
   };
 
   return (
@@ -59,6 +72,7 @@ export const ForumContextProvider = ({ children }) => {
         connect,
         // createProfile: publishProfile,
         getAllForums,
+        getForumComments
       }}
     >
       {children}
