@@ -8,6 +8,7 @@ import config from "./config.json";
 import "./styles/globals.css";
 import { BrowserRouter as Router } from "react-router-dom";
 import { StateContextProvider } from "./context/profile";
+import { ForumContextProvider } from "./context/forum";
 
 // This is the chainId your dApp will work on.
 // const activeChainId = ChainId.Mainnet;
@@ -20,7 +21,9 @@ root.render(
     <ThirdwebProvider desiredChainId={chainId}>
       <Router>
         <StateContextProvider>
-          <App />
+          <ForumContextProvider>
+            <App />
+          </ForumContextProvider>
         </StateContextProvider>
       </Router>
     </ThirdwebProvider>
