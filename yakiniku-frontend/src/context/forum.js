@@ -15,25 +15,28 @@ export const ForumContextProvider = ({ children }) => {
   const { contract } = useContract(contractAddress);
   console.log(contract);
 
-  //   const { mutateAsync: createProfile } = useContractWrite(
-  //     contract,
-  //     "createProfile"
-  //   );
+  const { mutateAsync: createForum } = useContractWrite(
+    contract,
+    "createForum"
+  );
 
   const address = useAddress();
   const connect = useMetamask();
 
-  //   const publishProfile = async (form) => {
-  //     try {
-  //       console.log(form.name);
-  //       const data = await createProfile([form.name, form.bio, form.image]);
+  const publishForum = async (form) => {
+    try {
+      console.log(form.title);
+      const data = await createForum([
+        form.title,
+        form.description,
+        form.image,
+      ]);
 
-  //       console.log("contract call success", data);
-  //     } catch (error) {
-  //       console.log("contract call failure", error);
-  //       console.log("address already exist.");
-  //     }
-  //   };
+      console.log("contract call success", data);
+    } catch (error) {
+      console.log("contract call failure", error);
+    }
+  };
 
   const getAllForums = async () => {
     const forums = await contract.call("getAllForums");
@@ -55,10 +58,10 @@ export const ForumContextProvider = ({ children }) => {
     const comments = await contract.call("getForumComments", forumId);
 
     const parsedComments = comments.map((comment, i) => ({
-        text: comment.text,
-        date: new Date(comment.date.toNumber() * 1000).toString(),
-        creator: comment.creator,
-      }));
+      text: comment.text,
+      date: new Date(comment.date.toNumber() * 1000).toString(),
+      creator: comment.creator,
+    }));
 
     console.log(parsedComments);
     return parsedComments;
@@ -70,9 +73,9 @@ export const ForumContextProvider = ({ children }) => {
         address,
         contract,
         connect,
-        // createProfile: publishProfile,
+        createForum: publishForum,
         getAllForums,
-        getForumComments
+        getForumComments,
       }}
     >
       {children}
