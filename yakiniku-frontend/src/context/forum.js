@@ -19,6 +19,10 @@ export const ForumContextProvider = ({ children }) => {
     contract,
     "createForum"
   );
+  const { mutateAsync: commentForum } = useContractWrite(
+    contract,
+    "addComment"
+  );
 
   const address = useAddress();
   const connect = useMetamask();
@@ -67,6 +71,16 @@ export const ForumContextProvider = ({ children }) => {
     return parsedComments;
   };
 
+  const publishComment = async (forumId, commentText) => {
+    try {
+      const data = await commentForum([forumId, commentText]);
+
+      console.log("contract call success", data);
+    } catch (error) {
+      console.log("contract call failure", error);
+    }
+  };
+
   return (
     <StateContext.Provider
       value={{
@@ -74,6 +88,7 @@ export const ForumContextProvider = ({ children }) => {
         contract,
         connect,
         createForum: publishForum,
+        commentForum: publishComment,
         getAllForums,
         getForumComments,
       }}

@@ -8,7 +8,8 @@ const Forum = () => {
   const forum = location.state;
 
   const [comments, setComments] = useState([]);
-  const { getForumComments } = useForumContext();
+  const [commentText, setCommentText] = useState("");
+  const { getForumComments, commentForum } = useForumContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,6 +19,17 @@ const Forum = () => {
 
     fetchData();
   }, [forum.id, getForumComments]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (commentText.trim() === "") {
+      return;
+    }
+    await commentForum(forum.id, commentText);
+    setCommentText("");
+    const result = await getForumComments(forum.id);
+    setComments(result);
+  };
 
   return (
     <div>
@@ -31,6 +43,15 @@ const Forum = () => {
       {comments.map((comment, i) => (
         <CommentCard key={i} comment={comment} />
       ))}
+
+      <h1>Add Comment</h1>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 };
