@@ -85,6 +85,7 @@ contract DappForum {
             result[i - 1].date = forums[i].date;
             result[i - 1].description = forums[i].description;
             result[i - 1].creator = forums[i].creator;
+            result[i - 1].image = forums[i].image;
         }
         return result;
     }
