@@ -1,13 +1,72 @@
-import React from "react";
+import React from 'react'
+import {
+	Avatar,
+	Box,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Flex,
+	Heading,
+	IconButton,
+	Image,
+	Text,
+} from '@chakra-ui/react'
 
-const Card = ({ title, description, image, onClick }) => {
-    return (
-      <div className="card" onClick={onClick}>
-        <img src={image} alt={title} />
-        <h2>{title}</h2>
-        <p>{description}</p>
-      </div>
-    );
-  };
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 
-export default Card;
+const ForumCard = ({ title, description, image, onClick }) => {
+	return (
+		<Card maxW="full">
+			<CardHeader>
+				<Flex spacing="4">
+					<Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+						<Avatar
+							name="Segun Adebayo"
+							src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix"
+						/>
+						<Box>
+							<Heading size="sm">
+								Segun Adebayo
+								{/* forum poster */}
+							</Heading>
+						</Box>
+					</Flex>
+					<IconButton
+						variant="ghost"
+						colorScheme="gray"
+						aria-label="See post"
+						icon={<ExternalLinkIcon />}
+					/>
+				</Flex>
+			</CardHeader>
+			<CardBody py="2">
+				<Heading size="s" textTransform="uppercase" pb="4">
+					{title}
+				</Heading>
+				<Image objectFit="cover" src={image} />
+				<Text noOfLines={3}>{description}</Text>
+			</CardBody>
+
+			<CardFooter
+				justify="space-between"
+				flexWrap="wrap"
+				sx={{
+					'& > button': {
+						minW: '136px',
+					},
+				}}
+			>
+				<Button flex="1" variant="ghost">
+					Like
+				</Button>
+				<Button flex="1" variant="ghost">
+					Comment
+				</Button>
+			</CardFooter>
+		</Card>
+	)
+}
+
+export default ForumCard
