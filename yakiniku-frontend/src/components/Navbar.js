@@ -32,6 +32,7 @@ import {
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { ConnectWallet } from '@thirdweb-dev/react'
+import { ReactComponent as Block3Icon } from '../assets/logo.svg'
 
 export function NavBar() {
 	const { isOpen, onToggle } = useDisclosure()
@@ -81,8 +82,7 @@ export function NavBar() {
 						as={'a'}
 						href="/"
 					>
-						{/* <PandaIcon /> */}
-						Block3
+						<Block3Icon />
 					</Text>
 
 					<Flex display={{ base: 'none', md: 'flex' }} ml={10}>
