@@ -10,8 +10,18 @@ import {
   Td,
   Link,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const NFTTable = ({ nftData }) => {
+
+  const navigate = useNavigate();
+  const toIssueNFT = (nftDetails) =>{
+    console.log(nftDetails);
+    navigate("/issueNFT", {
+      state: nftDetails
+    });
+  }
+
   return (
     <>
       <TableContainer>
@@ -44,7 +54,7 @@ const NFTTable = ({ nftData }) => {
                     </Link>
                   </Td>
                   <Td>
-                    <Button>Issue NFT</Button>
+                    <Button onClick={() => {toIssueNFT(data)}}>Issue NFT</Button>
                   </Td>
                 </Tr>
               </>
