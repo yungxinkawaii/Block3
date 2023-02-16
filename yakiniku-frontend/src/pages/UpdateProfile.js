@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useStateContext } from "../context/profile";
 import { ConnectWallet } from "@thirdweb-dev/react";
 
-const CreateProfile = () => {
+const UpdateProfile = () => {
   const [form, setForm] = useState({
     name: "",
     bio: "",
     image: "",
   });
 
-  const { createProfile, connect } = useStateContext();
+  const { updateProfile, connect } = useStateContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +17,7 @@ const CreateProfile = () => {
     if (!connect) return;
     if (!form.name || !form.bio || !form.image) return;
 
-    createProfile(form);
+    updateProfile(form);
   };
 
   const handleChange = (e) => {
@@ -29,7 +29,7 @@ const CreateProfile = () => {
       <div className="connect">
         <ConnectWallet />
       </div>
-      <h1>Create Profile</h1>
+      <h1>Update Profile</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Name:</label>
@@ -61,10 +61,10 @@ const CreateProfile = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Create</button>
+        <button type="submit">Update</button>
       </form>
     </div>
   );
 };
 
-export default CreateProfile;
+export default UpdateProfile;

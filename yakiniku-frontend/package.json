@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chakra-ui/react": "^2.5.0",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
@@ -11,6 +14,7 @@
     "@thirdweb-dev/sdk": "^3",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
+    "framer-motion": "^9.0.2",
     "react": "^18.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1",
@@ -18,6 +22,7 @@
     "web-vitals": "^3.1.0"
   },
   "devDependencies": {
+    "@chakra-ui/icons": "^2.0.17",
     "assert": "^2.0.0",
     "react-app-rewired": "^2.2.1",
     "stream": "^0.0.2"
