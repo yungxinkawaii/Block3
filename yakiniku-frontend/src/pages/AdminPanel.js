@@ -6,13 +6,6 @@ import {
   Input,
   Stack,
   Button,
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
   Heading,
   useDisclosure,
   Modal,
@@ -23,85 +16,11 @@ import {
   ModalContent,
   ModalFooter,
   Spacer,
-  Link,
 } from "@chakra-ui/react";
+import NFTTable from "../components/NFTTable";
 import { AddIcon } from "@chakra-ui/icons";
 import { useNftMarketplaceContext } from "../context/nftMarketplace";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../utils/pinata";
-
-const NFTTable = () => {
-  return (
-    <>
-      <TableContainer>
-        <Table size="sm">
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Description</Th>
-              <Th isNumeric>Price</Th>
-              <Th>Link</Th>
-              <Th>Issue</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Tr>
-              <Td>Lorem</Td>
-              <Td>Ipsum</Td>
-              <Td>Dol</Td>
-              <Td>
-                <Link
-                  textDecoration={"underline"}
-                  color={"teal.500"}
-                  href={`/nft`}
-                >
-                  0x123 ... 456
-                </Link>
-              </Td>
-              <Td>
-                <Button>Issue NFT</Button>
-              </Td>
-            </Tr>
-            <Tr>
-              <Td>Lorem</Td>
-              <Td>Ipsum</Td>
-              <Td>Dol</Td>
-              <Td>
-                <Link
-                  textDecoration={"underline"}
-                  color={"teal.500"}
-                  href={`/nft`}
-                >
-                  0x123 ... 456
-                </Link>
-              </Td>
-              <Td>
-                <Button>Issue NFT</Button>
-              </Td>
-            </Tr>
-            <Tr>
-              <Td>Lorem</Td>
-              <Td>Ipsum</Td>
-              <Td>Dol</Td>
-              <Td>
-                <Link
-                  textDecoration={"underline"}
-                  color={"teal.500"}
-                  href={`/nft`}
-                >
-                  0x123 ... 456
-                </Link>
-              </Td>
-              <Td>
-                {/* TODO: link to Issue NFT page with the correct id */}
-                <Button>Issue NFT</Button>
-              </Td>
-            </Tr>
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </>
-  );
-};
 
 const AddNFTModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -253,6 +172,26 @@ const AddNFTModal = () => {
   );
 };
 export default function AdminPanel() {
+
+  const [nftData, updateNftData] = useState([]);
+  const [dataFetched, updateFetched] = useState(false);
+  const { getAllNFTs } = useNftMarketplaceContext();
+
+    async function callGetAllNFTs() {
+
+      let nftListed = await getAllNFTs();
+      console.log(nftListed);
+      
+      updateFetched(true);
+      updateNftData(nftListed);
+    }
+
+    if (!dataFetched) {
+      setTimeout(() => {
+        callGetAllNFTs();
+      }, 1000);
+    }
+
   return (
     <div>
       {/* 3. A page for displaying details for a particular NFT 
@@ -271,7 +210,7 @@ export default function AdminPanel() {
         {/* 1. Put this in a modal form to list/create a NFT (with the details: NFT Name, NFT Description, Price, Upload Image, List NFT button) */}
       </Flex>
       {/* 2. A table showing all the NFTs, each row comes with NFT details and a button to direct to NFT details page at 3. */}
-      <NFTTable />
+      <NFTTable nftData={nftData} />
     </div>
   );
 }
