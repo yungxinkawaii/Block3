@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals'
 import { ThirdwebProvider } from '@thirdweb-dev/react'
 import config from './config.json'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { StateContextProvider } from './context/profile'
+import { ProfileContextProvider } from './context/profile'
 import { ForumContextProvider } from './context/forum'
 
 // This is the chainId your dApp will work on.
@@ -19,11 +19,11 @@ root.render(
 	<React.StrictMode>
 		<ThirdwebProvider desiredChainId={chainId}>
 			<Router>
-				<StateContextProvider>
+				<ProfileContextProvider>
 					<ForumContextProvider>
 						<App />
 					</ForumContextProvider>
-				</StateContextProvider>
+				</ProfileContextProvider>
 			</Router>
 		</ThirdwebProvider>
 	</React.StrictMode>
