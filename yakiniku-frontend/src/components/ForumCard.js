@@ -16,20 +16,18 @@ import {
 
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 
-const ForumCard = ({ title, description, image, onClick }) => {
+const ForumCard = ({ creator, title, description, image, onClick }) => {
 	return (
 		<Card maxW="full">
 			<CardHeader>
 				<Flex spacing="4">
 					<Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-						<Avatar
-							name="Segun Adebayo"
-							src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix"
-						/>
+						<Avatar src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix" />
 						<Box>
+							{/* todo, display creator profile username if have */}
 							<Heading size="sm">
-								Segun Adebayo
-								{/* forum poster */}
+								{creator.substr(0, 6)}...
+								{creator.substr(-6)}
 							</Heading>
 						</Box>
 					</Flex>

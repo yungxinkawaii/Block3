@@ -90,9 +90,7 @@ contract DappForum {
         return result;
     }
 
-    function getForum(
-        uint256 _forumId
-    )
+    function getForum(uint256 _forumId)
         public
         view
         returns (
@@ -117,9 +115,11 @@ contract DappForum {
         );
     }
 
-    function getForumComments(
-        uint256 _forumId
-    ) public view returns (Comment[] memory) {
+    function getForumComments(uint256 _forumId)
+        public
+        view
+        returns (Comment[] memory)
+    {
         require(_forumId <= forumCounter, "Forum does not exist.");
         return forums[_forumId].comments;
     }
