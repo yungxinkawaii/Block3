@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@thirdweb-dev/contracts": "^3",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3", 
+    "@openzeppelin/contracts": "^4.6.0"
   }
 }
