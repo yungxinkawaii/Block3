@@ -19,6 +19,7 @@ import {
 import { useLocation } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { updateIPFSMetadata } from "../utils/pinata";
+import { useNftMarketplaceContext } from "../context/nftMarketplace";
 
 const Tags = (props) => {
   return (
@@ -39,8 +40,11 @@ export default function IssueNFT() {
   const location = useLocation();
   const nftDetails = location.state;
   const metadataURL = nftDetails.metadataURL;
+  const tokenId = nftDetails.tokenId;
   console.log(nftDetails);
   const [formParams, updateFormParams] = useState([]);
+  const { issueNFT } = useNftMarketplaceContext();
+
 
   const MintInputGroup = (props) => {
     return (
@@ -76,9 +80,23 @@ export default function IssueNFT() {
     setGroups(updatedGroups);
   };
 
-  const callIssueNFT = () => {
-	console.log(formParams);
-	console.log(groups);
+  const callIssueNFT = async () => {
+    let mintVal = [10, 20, 30];
+    let connectedAddresses = {
+      10: ["0x1e84F443fB8f0D9DC868F95d8f675a706a9268AF"],
+      20: ["0x6b4F51E7A637bd008C1E0213441380cd1f562144"],
+      30: ["0xC42a639837f8b3F941812FdDa3F112701334d4Cd"],
+    };
+
+    let nftListed = await issueNFT(tokenId, mintVal, connectedAddresses);
+    console.log(nftListed);
+    let eventDetails = nftListed.receipt.events[0].args;
+    let redeemDetails = {};
+    for (let i in mintVal) {
+      redeemDetails[mintVal[i]] = eventDetails.redeemCodes[i];
+    }
+    console.log(redeemDetails);
+    console.log(nftListed.logs);
   };
 
   return (
