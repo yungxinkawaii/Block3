@@ -11,7 +11,7 @@ import { ForumContextProvider } from './context/forum'
 
 // This is the chainId your dApp will work on.
 // const activeChainId = ChainId.Mainnet;
-const chainId = config.chainId
+const chainId = config.chainId;
 
 const container = document.getElementById('root')
 const root = createRoot(container)
