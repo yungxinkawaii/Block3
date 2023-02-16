@@ -16,11 +16,10 @@ const ethers = require("ethers");
 export const NftMarketplaceContextProvider = ({ children }) => {
   const { contract } = useContract(contractAddress);
   console.log(contract);
+  let { listingPrice, isLoading } = useContractRead(contract, "getListPrice");
 
   const address = useAddress();
   const connect = useMetamask();
-  let { listingPrice, isLoading } = useContractRead(contract, "getListPrice");
-  listingPrice = listingPrice.toString();
 
   const getMyNFTs = async () => {
     //Get an NFT Token
@@ -113,6 +112,8 @@ export const NftMarketplaceContextProvider = ({ children }) => {
 
   const listNFT = async (metadataURL, price, mintVal) => {
     let priceInEthers = ethers.utils.parseUnits(price, "ether");
+    listingPrice = 0.01;
+    listingPrice = listingPrice.toString();
 
     //actually create the NFT
     let data = await contract.call(
@@ -120,7 +121,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
       metadataURL,
       priceInEthers,
       mintVal,
-      { value: listingPrice }
+      { value: ethers.utils.parseEther(listingPrice) }
     );
     console.log(data);
     // let transaction = await contract.createToken(metadataURL, price, mintVal, {
@@ -166,9 +167,9 @@ export const NftMarketplaceContextProvider = ({ children }) => {
         connect,
         getMyNFTs,
         getAllNFTs,
-		getNFTData,
-		listNFT,
-		issueNFT,
+        getNFTData,
+        listNFT,
+        issueNFT,
         redeemNFT,
       }}
     >
@@ -177,4 +178,4 @@ export const NftMarketplaceContextProvider = ({ children }) => {
   );
 };
 
-export const useForumContext = () => useContext(StateContext);
+export const useNftMarketplaceContext = () => useContext(StateContext);
