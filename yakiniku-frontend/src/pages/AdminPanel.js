@@ -28,10 +28,10 @@ const AddNFTModal = () => {
     name: "",
     description: "",
     price: "",
+    mintValue: []
   });
   const [fileURL, setFileURL] = useState(null);
   const [message, updateMessage] = useState("");
-  let mintVal = [10, 20, 30];
 
   const { listNFT } = useNftMarketplaceContext();
 
@@ -53,7 +53,7 @@ const AddNFTModal = () => {
   }
 
   //This function uploads the metadata to IPDS
-  async function uploadMetadataToIPFS() {
+  async function uploadMetadataToIPFS(mintValArr) {
     const { name, description, price } = formParams;
     //Make sure that none of the fields are empty
     if (!name || !description || !price || !fileURL) return;
@@ -62,7 +62,7 @@ const AddNFTModal = () => {
       name,
       description,
       price,
-      mintVal,
+      mintValArr,
       image: fileURL,
     };
 
@@ -79,17 +79,23 @@ const AddNFTModal = () => {
   }
 
   async function callListNFT(e) {
+    let mintValArr = [];
+    for (let i in formParams.mintValue){
+      mintValArr.push(Number(formParams.mintValue[i]));
+    } 
+    updateFormParams({ ...formParams, mintValue: mintValArr });
+
     e.preventDefault();
     try {
       updateMessage("Please wait.. uploading (upto 5 mins)");
-      const metadataURL = await uploadMetadataToIPFS();
+      const metadataURL = await uploadMetadataToIPFS(mintValArr);
 
-      let nftListed = await listNFT(metadataURL, formParams.price, mintVal);
+      let nftListed = await listNFT(metadataURL, formParams.price, mintValArr);
       console.log(nftListed);
       let eventDetails = nftListed.receipt.events[0].args;
       let redeemDetails = {};
-      for (let i in mintVal) {
-        redeemDetails[mintVal[i]] = eventDetails.redeemCodes[i];
+      for (let i in mintValArr) {
+        redeemDetails[mintValArr[i]] = eventDetails.redeemCodes[i];
       }
       console.log(redeemDetails);
       console.log(nftListed.logs);
@@ -151,6 +157,20 @@ const AddNFTModal = () => {
                   value={formParams.price}
                   onChange={(e) =>
                     updateFormParams({ ...formParams, price: e.target.value })
+                  }
+                />
+              </FormControl>
+              <FormControl id="NFTMintValue">
+                <FormLabel>NFT Mint Value</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Mint value(s) separated by ','"
+                  value={formParams.mintVal}
+                  onChange={(e) =>
+                    updateFormParams({
+                      ...formParams,
+                      mintValue: (e.target.value).split(','),
+                    })
                   }
                 />
               </FormControl>
