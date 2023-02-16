@@ -297,10 +297,6 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
 	{
-		label: 'See Individual Forum',
-		href: '/forum',
-	},
-	{
 		label: 'Profile',
 		href: '/profile',
 	},

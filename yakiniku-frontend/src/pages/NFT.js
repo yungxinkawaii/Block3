@@ -28,7 +28,7 @@ const Tags = (props) => {
 const NFT = () => {
 	return (
 		<>
-			<Heading as="h1">NFT</Heading>
+			<Heading as="h1">NFT Details</Heading>
 			<Box
 				marginTop={{ base: '1', sm: '5' }}
 				display="flex"

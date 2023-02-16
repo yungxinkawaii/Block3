@@ -6,6 +6,7 @@ import CreateForum from './pages/CreateForum'
 import Forum from './pages/Forum'
 import AdminPanel from './pages/AdminPanel'
 import NFT from './pages/NFT'
+import IssueNFT from './pages/IssueNFT'
 import { Route, Routes } from 'react-router-dom'
 import { NavBar } from './components/NavBar'
 import theme from './theme'
@@ -28,6 +29,7 @@ const App = () => {
 					<Route path="/admin" element={<AdminPanel />} />
 					{/* TODO: route to individual NFT */}
 					<Route path="/nft" element={<NFT />} />
+					<Route path="/issueNFT" element={<IssueNFT />} />
 				</Routes>
 			</Container>
 		</ChakraProvider>
