@@ -74,6 +74,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item = {
           price,
+          metadataURL: tokenURI,
           tokenId: i.tokenId.toNumber(),
           seller: i.seller,
           owner: i.owner,
