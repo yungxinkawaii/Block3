@@ -1,5 +1,7 @@
 {
-    "chainId": 1422,
-    "forumContractAddress": "0xDcA4c02c27203a521510bBaff137F0fa4136c580",
-    "profileContractAddress": "0x417853188f74BDD8A5BBEE9f6E86857CEA9b72C3"
+  "chainId": 1422,
+  "forumContractAddress": "0x53a711dbF73C6B33Ab00Fb5217c5a99251743fC2",
+  "profileContractAddress": "0x417853188f74BDD8A5BBEE9f6E86857CEA9b72C3",
+  "rwdContractAddress": "0x81f2c88AA4E72F18a5E7391396B16fa1747C24f9",
+  "nftMarketplaceAddress": "0xE5827e8C4A42569e595b9c7CEEbE1fC636863644"
 }
