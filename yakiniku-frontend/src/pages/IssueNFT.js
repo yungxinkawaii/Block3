@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { updateIPFSMetadata } from "../utils/pinata";
 
 const Tags = (props) => {
   return (
@@ -33,30 +34,35 @@ const Tags = (props) => {
   );
 };
 
-const MintInputGroup = (props) => {
-  return (
-    <>
-      <Flex w="100%">
-        <NumberInput w="25%" mr="2">
-          <NumberInputField placeholder="Mint value" />
-        </NumberInput>
-        <Input w="70%" placeholder="Input email(s) separated by ','" mr="2" />
-        <IconButton
-          colorScheme={"red"}
-          onClick={props.onRemove}
-          icon={<DeleteIcon />}
-        />
-      </Flex>
-    </>
-  );
-};
-
 export default function IssueNFT() {
   const [groups, setGroups] = useState([]);
   const location = useLocation();
-  console.log(location);
   const nftDetails = location.state;
+  const metadataURL = nftDetails.metadataURL;
   console.log(nftDetails);
+  const [formParams, updateFormParams] = useState([]);
+
+  const MintInputGroup = (props) => {
+    return (
+      <>
+        <Flex w="100%">
+          <NumberInput w="25%" mr="2">
+            <NumberInputField
+              placeholder="Mint value"
+            />
+          </NumberInput>
+          <Input w="70%" placeholder="Input email(s) separated by ','" mr="2" />
+          <IconButton
+            colorScheme={"red"}
+            onClick={props.onRemove}
+            icon={<DeleteIcon />}
+          />
+        </Flex>
+      </>
+    );
+  };
+
+  
 
   const handleAddGroup = () => {
     if (groups.length < 3) {
@@ -68,6 +74,11 @@ export default function IssueNFT() {
   const handleRemoveGroup = (id) => {
     const updatedGroups = groups.filter((group) => group.id !== id);
     setGroups(updatedGroups);
+  };
+
+  const callIssueNFT = () => {
+	console.log(formParams);
+	console.log(groups);
   };
 
   return (
@@ -153,7 +164,7 @@ export default function IssueNFT() {
               Add Mint Input Group
             </Button>
           </Stack>
-          <Button w="full" colorScheme={"primary"}>
+          <Button w="full" colorScheme={"primary"} onClick={callIssueNFT}>
             Issue NFT
           </Button>
         </Box>
