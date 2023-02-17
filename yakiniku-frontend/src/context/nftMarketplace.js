@@ -94,6 +94,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
   const getNFTData = async (tokenId) => {
     const tokenURI = await contract.call("tokenURI", tokenId);
     const listedToken = await contract.call("getListedTokenForId", tokenId);
+    const redeemDetails = await contract.call("getRedeemDetailsForId", tokenId);
 
     let meta = await axios.get(tokenURI);
     meta = meta.data;
@@ -101,19 +102,20 @@ export const NftMarketplaceContextProvider = ({ children }) => {
 
     let item = {
       price: meta.price,
-      mintVal: meta.mintVal,
       tokenId: tokenId,
       seller: listedToken.seller,
       owner: listedToken.owner,
       image: meta.image,
       name: meta.name,
       description: meta.description,
+      mintVal: redeemDetails.mintVal,
+      redeemCodes: redeemDetails.redeemCodes,
     };
 
     return item;
   };
 
-  const listNFT = async (metadataURL, price, mintVal) => {
+  const listNFT = async (metadataURL, price) => {
     let priceInEthers = ethers.utils.parseUnits(price, "ether");
     listingPrice = 0.01;
     listingPrice = listingPrice.toString();
@@ -123,7 +125,6 @@ export const NftMarketplaceContextProvider = ({ children }) => {
       "createToken",
       metadataURL,
       priceInEthers,
-      mintVal,
       { value: ethers.utils.parseEther(listingPrice) }
     );
     console.log(data);
@@ -140,7 +141,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
     return data;
   };
 
-  const issueNFT = async (tokenId, connectedAddresses) => {
+  const issueNFT = async (tokenId, connectedAddresses, idxArr, mintVal) => {
     let data;
     try {
       data = await contract.call("issueNFT", tokenId, connectedAddresses);
@@ -151,10 +152,10 @@ export const NftMarketplaceContextProvider = ({ children }) => {
     return data;
   };
 
-  const redeemNFT = async (tokenId, redeemCode) => {
+  const redeemNFT = async (redeemCode) => {
     let data;
     try {
-      data = await contract.call("redeemNFT", tokenId, redeemCode);
+      data = await contract.call("redeemNFT", redeemCode);
       console.log("contract call success", data);
     } catch (error) {
       console.log("contract call failure", error);
