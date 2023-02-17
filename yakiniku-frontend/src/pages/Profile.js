@@ -167,17 +167,17 @@ const Profile = () => {
     fetchData();
   }, [balance, getBalance]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     const NFTs = await getMyNFTs();
-  //     setMyNFTs(NFTs);
-  //     setLoading(false);
-  //   };
-  //   fetchData();
-  //   console.log("myNFTs variable", myNFTs);
-  // }, [myNFTs, getMyNFTs]);
-
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const NFTs = await getMyNFTs();
+      setMyNFTs(NFTs);
+      setLoading(false);
+    };
+    fetchData();
+    console.log("myNFTs variable", myNFTs);
+  }, [myNFTs, getMyNFTs]);
+  
   const navigate = useNavigate();
 
   const handleNavigate = (forum) => {
