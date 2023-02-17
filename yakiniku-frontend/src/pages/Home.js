@@ -99,18 +99,21 @@ export default function Home() {
 				{loading ? (
 					<Spinner size="xl" />
 				) : (
-					forums.map((forum) => (
-						<ForumCard
-							username={forum.username}
-							creator={forum.creator}
-							id={forum.id}
-							key={forum.id}
-							title={forum.title}
-							description={forum.description}
-							image={forum.image}
-							onClick={() => handleNavigate(forum)}
-						/>
-					))
+					forums
+						.slice()
+						.reverse()
+						.map((forum) => (
+							<ForumCard
+								username={forum.username}
+								creator={forum.creator}
+								id={forum.id}
+								key={forum.id}
+								title={forum.title}
+								description={forum.description}
+								image={forum.image}
+								onClick={() => handleNavigate(forum)}
+							/>
+						))
 				)}
 			</Stack>
 			<Flex width="25%">
