@@ -144,7 +144,13 @@ export const NftMarketplaceContextProvider = ({ children }) => {
   const issueNFT = async (tokenId, connectedAddresses, idxArr, mintVal) => {
     let data;
     try {
-      data = await contract.call("issueNFT", tokenId, connectedAddresses);
+      data = await contract.call(
+        "issueNFT",
+        tokenId,
+        connectedAddresses,
+        idxArr,
+        mintVal
+      );
       console.log("contract call success", data);
     } catch (error) {
       console.log("contract call failure", error);
