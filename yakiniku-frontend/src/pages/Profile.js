@@ -22,11 +22,87 @@ import {
 	Tab,
 	TabPanels,
 	TabPanel,
+	Grid,
+	GridItem,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalCloseButton,
+	ModalBody,
+	useDisclosure,
+	ModalFooter,
 } from '@chakra-ui/react'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { AddIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { useForumContext } from '../context/forum'
 import { useProfileContext } from '../context/profile'
+import { useNftMarketplaceContext } from '../context/nftMarketplace'
+import NFTCard from '../components/NFTCard'
+
+const RedeemNFTModal = () => {
+	const { isOpen, onOpen, onClose } = useDisclosure()
+	const [voucherCode, setVoucherCode] = useState('')
+	const { redeemNFT } = useNftMarketplaceContext()
+
+	const handleRedeem = async (event) => {
+		event.preventDefault()
+		//convert voucherCode into string
+		let voucherCodeInt = parseInt(voucherCode)
+		await redeemNFT(15, voucherCodeInt)
+	}
+
+	return (
+		<>
+			<Box
+				role={'group'}
+				p={6}
+				maxW={'320px'}
+				height="100%"
+				w={'full'}
+				boxShadow={'2xl'}
+				rounded={'lg'}
+				as={Button}
+				onClick={onOpen}
+			>
+				<Stack align={'center'}>
+					<IconButton
+						variant={'ghost'}
+						_hover={{ bg: 'none' }}
+						icon={<AddIcon size="2xl" />}
+					/>
+					<Text color={'gray.400'} fontSize={'2xl'} textTransform={'uppercase'}>
+						REDEEM NFT
+					</Text>
+				</Stack>
+			</Box>
+
+			<Modal isOpen={isOpen} onClose={onClose}>
+				<ModalOverlay />
+				<ModalContent>
+					<ModalHeader>Redeem NFT</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>
+						<Stack spacing={4}>
+							<FormControl id="NFTRedeem">
+								<FormLabel>NFT Voucher Code</FormLabel>
+								<Input
+									type="text"
+									value={voucherCode}
+									onChange={(e) => setVoucherCode(e.target.value)}
+								/>
+							</FormControl>
+							<Button onClick={handleRedeem} colorScheme={'primary'}>
+								Redeem NFT
+							</Button>
+						</Stack>
+					</ModalBody>
+					<ModalFooter />
+				</ModalContent>
+			</Modal>
+		</>
+	)
+}
 
 const ForumCardNoTitle = ({ title, description, image, onClick }) => (
 	<Card maxW="full">
@@ -50,10 +126,13 @@ const ForumCardNoTitle = ({ title, description, image, onClick }) => (
 )
 
 const Profile = () => {
-	const [profile, setProfile] = useState({})
 	const { getProfile, address } = useProfileContext()
 	const { getForumsByCreator } = useForumContext()
+	const { getMyNFTS } = useNftMarketplaceContext()
+
+	const [profile, setProfile] = useState({})
 	const [forums, setForums] = useState([])
+	const [myNFTs, setMyNFTs] = useState([])
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
@@ -73,6 +152,17 @@ const Profile = () => {
 		}
 		fetchData()
 	}, [address, getForumsByCreator])
+
+	useEffect(() => {
+		const fetchData = async () => {
+			setLoading(true)
+			const NFTs = await getMyNFTS()
+			setMyNFTs(NFTs)
+			setLoading(false)
+		}
+		fetchData()
+		console.log('myNFTs variable', myNFTs)
+	}, [myNFTs, getMyNFTS])
 
 	const navigate = useNavigate()
 
@@ -105,53 +195,51 @@ const Profile = () => {
 		<Flex flexDir={'col'} w="100%">
 			{/* if profile does not exist, show form */}
 			{!profile.name ? (
-				<>
-					<Box
-						rounded={'lg'}
-						bg="white"
-						_dark={{ bg: 'gray.700' }}
-						boxShadow={'lg'}
-						p={8}
-					>
-						<form onSubmit={handleSubmit}>
-							<Stack spacing={4}>
-								<FormControl>
-									<FormLabel>Name</FormLabel>
-									<Input
-										type="text"
-										id="name"
-										name="name"
-										value={form.name}
-										onChange={handleChange}
-									/>
-								</FormControl>
-								<FormControl>
-									<FormLabel>Bio</FormLabel>
-									<Input
-										type="text"
-										id="bio"
-										name="bio"
-										value={form.bio}
-										onChange={handleChange}
-									/>
-								</FormControl>
-								<FormControl>
-									<FormLabel>Upload Image</FormLabel>
-									<Input
-										type="text"
-										id="image"
-										name="image"
-										value={form.image}
-										onChange={handleChange}
-									/>
-								</FormControl>
-								<Button colorScheme="primary" type="submit">
-									Create Profile
-								</Button>
-							</Stack>
-						</form>
-					</Box>
-				</>
+				<Box
+					rounded={'lg'}
+					bg="white"
+					_dark={{ bg: 'gray.700' }}
+					boxShadow={'lg'}
+					p={8}
+				>
+					<form onSubmit={handleSubmit}>
+						<Stack spacing={4}>
+							<FormControl>
+								<FormLabel>Name</FormLabel>
+								<Input
+									type="text"
+									id="name"
+									name="name"
+									value={form.name}
+									onChange={handleChange}
+								/>
+							</FormControl>
+							<FormControl>
+								<FormLabel>Bio</FormLabel>
+								<Input
+									type="text"
+									id="bio"
+									name="bio"
+									value={form.bio}
+									onChange={handleChange}
+								/>
+							</FormControl>
+							<FormControl>
+								<FormLabel>Upload Image</FormLabel>
+								<Input
+									type="text"
+									id="image"
+									name="image"
+									value={form.image}
+									onChange={handleChange}
+								/>
+							</FormControl>
+							<Button colorScheme="primary" type="submit">
+								Create Profile
+							</Button>
+						</Stack>
+					</form>
+				</Box>
 			) : (
 				// TODO: make profile here dynamic also with ProfileCard.
 				<>
@@ -165,6 +253,7 @@ const Profile = () => {
 						p={6}
 						textAlign="center"
 						me="4"
+						h="100%"
 					>
 						<Avatar
 							size="xl"
@@ -209,8 +298,8 @@ const Profile = () => {
 							<TabList>
 								<Tab>Forum</Tab>
 								<Tab>Comments</Tab>
+								<Tab>NFTs</Tab>
 							</TabList>
-
 							<TabPanels py="4">
 								<TabPanel p="0">
 									<Stack spacing="4">
@@ -231,8 +320,22 @@ const Profile = () => {
 										)}
 									</Stack>
 								</TabPanel>
+								<TabPanel>Comments</TabPanel>
 								<TabPanel>
-									<p>two!</p>
+									<Grid templateColumns="repeat(3, 1fr)" gap={4}>
+										{myNFTs.map((nft, index) => (
+											<GridItem key={index} w="100%">
+												<NFTCard
+													owner={nft.owner}
+													name={nft.name}
+													price={nft.price}
+												/>
+											</GridItem>
+										))}
+										<GridItem w="100%">
+											<RedeemNFTModal />
+										</GridItem>
+									</Grid>
 								</TabPanel>
 							</TabPanels>
 						</Tabs>
