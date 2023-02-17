@@ -18,7 +18,8 @@ import {
 import { useLocation } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useNftMarketplaceContext } from "../context/nftMarketplace";
-import { makeIndexArr } from "../utils/arr_process";
+import { useProfileContext } from "../context/profile";
+import { makeIndexArr, flatten } from "../utils/arr_process";
 
 const Tags = (props) => {
   return (
@@ -34,6 +35,42 @@ const Tags = (props) => {
   );
 };
 
+const MintInputGroup = ({
+  id,
+  mintValue,
+  emails,
+  onMintValueChange,
+  onEmailsChange,
+  onRemove,
+}) => {
+  return (
+    <>
+      <Flex w="100%">
+        <NumberInput
+          w="25%"
+          mr="2"
+          value={mintValue}
+          onChange={onMintValueChange}
+        >
+          <NumberInputField placeholder="Mint value" />
+        </NumberInput>
+        <Input
+          w="70%"
+          placeholder="Input email(s) separated by ','"
+          mr="2"
+          value={emails}
+          onChange={onEmailsChange}
+        />
+        <IconButton
+          colorScheme={"red"}
+          onClick={onRemove}
+          icon={<DeleteIcon />}
+        />
+      </Flex>
+    </>
+  );
+};
+
 export default function IssueNFT() {
   const [groups, setGroups] = useState([]);
   const location = useLocation();
@@ -46,24 +83,7 @@ export default function IssueNFT() {
   console.log(nftDetails);
 
   const { issueNFT } = useNftMarketplaceContext();
-
-  const MintInputGroup = (props) => {
-    return (
-      <>
-        <Flex w="100%">
-          <NumberInput w="25%" mr="2">
-            <NumberInputField placeholder="Mint value" />
-          </NumberInput>
-          <Input w="70%" placeholder="Input email(s) separated by ','" mr="2" />
-          <IconButton
-            colorScheme={"red"}
-            onClick={props.onRemove}
-            icon={<DeleteIcon />}
-          />
-        </Flex>
-      </>
-    );
-  };
+  const { getAddrByEmail } = useProfileContext();
 
   const handleAddGroup = () => {
     if (groups.length < 3) {
@@ -99,33 +119,35 @@ export default function IssueNFT() {
   };
 
   const callIssueNFT = async () => {
-    console.log(groups);
+    let mintValArr = groups.map((group) => parseInt(group.mintValue));
+    console.log(mintValArr);
 
-    // let mintValArr = [10, 20, 30];
-    // let connectedAddresses = [
-    //   ["0x1e84F443fB8f0D9DC868F95d8f675a706a9268AF"],
-    //   ["0x6b4F51E7A637bd008C1E0213441380cd1f562144"],
-    //   ["0xC42a639837f8b3F941812FdDa3F112701334d4Cd"],
+    // let emails = [
+    //   ["xinlelam1030@gmail.com"],
+    //   ["xinlelam699@gmail.com"],
+    //   ["happinessas47164@gmail.com"],
     // ];
 
-    // let idxArr = makeIndexArr(connectedAddresses);
+    // let connectedAddresses = getAddrByEmail(emails);
+    // console.log(connectedAddresses);
 
-    // let transaction = await issueNFT(
-    //   tokenId,
-    //   connectedAddresses,
-    //   idxArr,
-    //   mintVal
-    // );
-    // let eventDetails = transaction.receipt.events[0].args;
-    // let redeemDetails = {};
-    // for (let i in mintValArr) {
-    //   redeemDetails[mintValArr[i]] = eventDetails.redeemCodes[i];
-    // }
-    // console.log(redeemDetails);
-    // console.log(transaction);
+    // let mintValArr = [10, 20, 30];
+    let connectedAddresses = [
+      ["0x1e84F443fB8f0D9DC868F95d8f675a706a9268AF"],
+      ["0x6b4F51E7A637bd008C1E0213441380cd1f562144"],
+      ["0xC42a639837f8b3F941812FdDa3F112701334d4Cd"],
+    ];
 
-    // console.log(mintVal);
-    // console.log(redeemCodes);
+    let idxArr = makeIndexArr(connectedAddresses);
+    let addresses = flatten(connectedAddresses);
+    console.log(addresses);
+
+    let transaction = await issueNFT(tokenId, addresses, idxArr, mintValArr);
+    console.log(transaction);
+
+    let redeemDetails = transaction.receipt.events[0].args;
+    console.log(redeemDetails.mintVal);
+    console.log(redeemDetails.redeemCodes);
   };
 
   return (
