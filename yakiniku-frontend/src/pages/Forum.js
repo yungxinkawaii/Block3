@@ -36,14 +36,15 @@ const Forum = () => {
 	}, [forumID, getForum])
 
 	// get forum comment
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		const result = await getForumComments(parseInt(forumID))
-	// 		setComments(result)
-	// 	}
+	useEffect(() => {
+		const fetchData = async () => {
+			const result = await getForumComments(parseInt(forumID))
+			console.log(result)
+			setComments(result)
+		}
 
-	// 	fetchData()
-	// }, [forumID, getForumComments])
+		fetchData()
+	}, [forumID, getForumComments])
 
 	// const handleSubmit = async (e) => {
 	// 	e.preventDefault()
@@ -64,9 +65,9 @@ const Forum = () => {
 						<Avatar src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix" />
 						<Box>
 							<Heading size="sm">
-								{forum.creator.substr(0, 6)}
+								{/* {forum.creator.substr(0, 6)}
 								...
-								{forum.creator.substr(-4)}
+								{forum.creator.substr(-4)} */}
 							</Heading>
 						</Box>
 					</Flex>
