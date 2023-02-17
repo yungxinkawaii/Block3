@@ -135,9 +135,10 @@ const Profile = () => {
 
   const [profile, setProfile] = useState({});
   const [forums, setForums] = useState([]);
-  const [myNFTs, setMyNFTs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
+  const [myNFTs, setMyNFTs] = useState([]);
+  const [dataFetched, updateFetched] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -167,17 +168,20 @@ const Profile = () => {
     fetchData();
   }, [balance, getBalance]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const NFTs = await getMyNFTs();
-      setMyNFTs(NFTs);
-      setLoading(false);
-    };
-    fetchData();
-    console.log("myNFTs variable", myNFTs);
-  }, [myNFTs, getMyNFTs]);
-  
+  async function callGetMyNFTs() {
+    let nftListed = await getMyNFTs();
+    console.log(nftListed);
+
+    updateFetched(true);
+    setMyNFTs(nftListed);
+  }
+
+  if (!dataFetched) {
+    setTimeout(() => {
+      callGetMyNFTs();
+    }, 2000);
+  }
+
   const navigate = useNavigate();
 
   const handleNavigate = (forum) => {
