@@ -3,6 +3,7 @@ import { useForumContext } from '../context/forum'
 import { useParams } from 'react-router-dom'
 import {
 	Avatar,
+	Box,
 	Card,
 	CardBody,
 	CardFooter,
@@ -28,7 +29,6 @@ const Forum = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const result = await getForum(parseInt(forumID))
-			console.log(result)
 			setForum(result)
 		}
 
@@ -36,14 +36,15 @@ const Forum = () => {
 	}, [forumID, getForum])
 
 	// get forum comment
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		const result = await getForumComments(parseInt(forumID))
-	// 		setComments(result)
-	// 	}
+	useEffect(() => {
+		const fetchData = async () => {
+			const result = await getForumComments(parseInt(forumID))
+			console.log(result)
+			setComments(result)
+		}
 
-	// 	fetchData()
-	// }, [forumID, getForumComments])
+		fetchData()
+	}, [forumID, getForumComments])
 
 	// const handleSubmit = async (e) => {
 	// 	e.preventDefault()
@@ -62,6 +63,13 @@ const Forum = () => {
 				<Flex spacing="4">
 					<Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
 						<Avatar src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix" />
+						<Box>
+							<Heading size="sm">
+								{/* {forum.creator.substr(0, 6)}
+								...
+								{forum.creator.substr(-4)} */}
+							</Heading>
+						</Box>
 					</Flex>
 				</Flex>
 			</CardHeader>
