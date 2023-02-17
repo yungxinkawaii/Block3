@@ -25,7 +25,7 @@ const App = () => {
 					<Route path="/update-profile" element={<UpdateProfile />} />
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/create-forum" element={<CreateForum />} />
-					<Route path="/forum/:id" element={<Forum />} />
+					<Route path="/forum/:forumID" element={<Forum />} />
 					<Route path="/admin" element={<AdminPanel />} />
 					{/* TODO: route to individual NFT */}
 					<Route path="/nft" element={<NFT />} />

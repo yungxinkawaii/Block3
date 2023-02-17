@@ -101,7 +101,9 @@ export default function Home() {
 				) : (
 					forums.map((forum) => (
 						<ForumCard
+							username={forum.username}
 							creator={forum.creator}
+							id={forum.id}
 							key={forum.id}
 							title={forum.title}
 							description={forum.description}

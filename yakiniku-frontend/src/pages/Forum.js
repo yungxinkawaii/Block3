@@ -1,63 +1,89 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useForumContext } from "../context/forum";
-import CommentCard from "../components/CommentCard";
-import { ConnectWallet } from "@thirdweb-dev/react";
+import React, { useState, useEffect } from 'react'
+import { useForumContext } from '../context/forum'
+import { useParams } from 'react-router-dom'
+import {
+	Avatar,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Flex,
+	Heading,
+	Image,
+	Text,
+} from '@chakra-ui/react'
 
 const Forum = () => {
-  const location = useLocation();
-  const forum = location.state;
+	const [comments, setComments] = useState([])
+	const [forum, setForum] = useState({})
+	const { getForumComments, commentForum, getForum } = useForumContext()
 
-  const [comments, setComments] = useState([]);
-  const [commentText, setCommentText] = useState("");
-  const { getForumComments, commentForum } = useForumContext();
+	const { forumID } = useParams()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await getForumComments(forum.id);
-      setComments(result);
-    };
+	useEffect(() => {
+		console.log(`/forum/${forumID}`)
+	}, [forumID])
 
-    fetchData();
-  }, [forum.id, getForumComments]);
+	// get forum content
+	useEffect(() => {
+		const fetchData = async () => {
+			const result = await getForum(parseInt(forumID))
+			console.log(result)
+			setForum(result)
+		}
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (commentText.trim() === "") {
-      return;
-    }
-    await commentForum(forum.id, commentText);
-    setCommentText("");
-    const result = await getForumComments(forum.id);
-    setComments(result);
-  };
+		fetchData()
+	}, [forumID, getForum])
 
-  return (
-    <div>
-      <div className="connect">
-        <ConnectWallet />
-      </div>
-      <h1>{forum.title}</h1>
-      <img src={forum.image} alt={forum.title} />
-      <p>{forum.description}</p>
-      <p>Created by: {forum.creator}</p>
-      <p>Date: {forum.date}</p>
+	// get forum comment
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		const result = await getForumComments(parseInt(forumID))
+	// 		setComments(result)
+	// 	}
 
-      <h1>Comments</h1>
-      {comments.map((comment, i) => (
-        <CommentCard key={i} comment={comment} />
-      ))}
+	// 	fetchData()
+	// }, [forumID, getForumComments])
 
-      <h1>Add Comment</h1>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-        />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  );
-};
+	// const handleSubmit = async (e) => {
+	// 	e.preventDefault()
+	// 	if (commentText.trim() === '') {
+	// 		return
+	// 	}
+	// 	await commentForum(forum.id, commentText)
+	// 	setCommentText('')
+	// 	const result = await getForumComments(forum.id)
+	// 	setComments(result)
+	// }
 
-export default Forum;
+	return (
+		<Card maxW="full">
+			<CardHeader>
+				<Flex spacing="4">
+					<Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+						<Avatar src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix" />
+					</Flex>
+				</Flex>
+			</CardHeader>
+			<CardBody py="2">
+				<Heading size="s" textTransform="uppercase" pb="4">
+					{forum.title}
+				</Heading>
+				<Image objectFit="cover" src={forum.image} />
+				<Text noOfLines={3}>{forum.description}</Text>
+			</CardBody>
+
+			<CardFooter
+				justify="space-between"
+				flexWrap="wrap"
+				sx={{
+					'& > button': {
+						minW: '136px',
+					},
+				}}
+			/>
+		</Card>
+	)
+}
+
+export default Forum
