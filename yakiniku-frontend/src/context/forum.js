@@ -1,115 +1,122 @@
-import React, { useContext, createContext } from "react";
+import React, { useContext, createContext } from 'react'
 
 import {
-  useAddress,
-  useContract,
-  useMetamask,
-  useContractWrite,
-} from "@thirdweb-dev/react";
-import config from "../config.json";
+	useAddress,
+	useContract,
+	useMetamask,
+	useContractWrite,
+} from '@thirdweb-dev/react'
+import config from '../config.json'
 
-const contractAddress = config.forumContractAddress;
-const StateContext = createContext();
+const contractAddress = config.forumContractAddress
+const StateContext = createContext()
 
 export const ForumContextProvider = ({ children }) => {
-  const { contract } = useContract(contractAddress);
-  console.log(contract);
+	const { contract } = useContract(contractAddress)
+	console.log(contract)
 
-  const { mutateAsync: createForum } = useContractWrite(
-    contract,
-    "createForum"
-  );
-  const { mutateAsync: commentForum } = useContractWrite(
-    contract,
-    "addComment"
-  );
+	const { mutateAsync: createForum } = useContractWrite(contract, 'createForum')
+	const { mutateAsync: commentForum } = useContractWrite(contract, 'addComment')
 
-  const address = useAddress();
-  const connect = useMetamask();
+	const address = useAddress()
+	const connect = useMetamask()
 
-  const publishForum = async (form) => {
-    try {
-      console.log(form.title);
-      const data = await createForum([
-        form.title,
-        form.description,
-        form.image,
-      ]);
-      console.log("contract call success", data);
-    } catch (error) {
-      console.log("contract call failure", error);
-    }
-  };
+	const publishForum = async (form) => {
+		try {
+			console.log(form.title)
+			const data = await createForum([form.title, form.description, form.image])
+			console.log('contract call success', data)
+		} catch (error) {
+			console.log('contract call failure', error)
+		}
+	}
 
-  const getAllForums = async () => {
-    const forums = await contract.call("getAllForums");
+	const getAllForums = async () => {
+		const forums = await contract.call('getAllForums')
 
-    const parsedForums = forums.map((forum, i) => ({
-      id: forum.id.toNumber(),
-      title: forum.title,
-      date: new Date(forum.date.toNumber() * 1000).toString(),
-      description: forum.description,
-      creator: forum.creator,
-      image: forum.image,
-    }));
-    return parsedForums;
-  };
+		const parsedForums = forums.map((forum, i) => ({
+			id: forum.id.toNumber(),
+			title: forum.title,
+			date: new Date(forum.date.toNumber() * 1000).toString(),
+			description: forum.description,
+			creator: forum.creator,
+			image: forum.image,
+		}))
+		return parsedForums
+	}
 
-  const getForumsByCreator = async (creator) => {
-    const forums = await contract.call("getAllForums");
+	const getForum = async (id) => {
+		const forum = await contract.call('getForum', id)
+		console.log(forum)
 
-    const parsedForums = forums
-      .filter((forum) => forum.creator === creator)
-      .map((forum) => ({
-        id: forum.id.toNumber(),
-        title: forum.title,
-        date: new Date(forum.date.toNumber() * 1000).toString(),
-        description: forum.description,
-        creator: forum.creator,
-        image: forum.image,
-      }));
-    return parsedForums;
-  };
+		const parsedForum = {
+			id: forum[4].toNumber(),
+			title: forum[0],
+			date: new Date(forum[3].toNumber() * 1000).toString(),
+			description: forum[1],
+			creator: forum[5],
+			image: forum[2],
+		}
 
-  const getForumComments = async (forumId) => {
-    const comments = await contract.call("getForumComments", forumId);
+		return parsedForum
+	}
 
-    const parsedComments = comments.map((comment, i) => ({
-      text: comment.text,
-      date: new Date(comment.date.toNumber() * 1000).toString(),
-      creator: comment.creator,
-    }));
+	const getForumsByCreator = async (creator) => {
+		const forums = await contract.call('getAllForums')
 
-    console.log(parsedComments);
-    return parsedComments;
-  };
+		const parsedForums = forums
+			.filter((forum) => forum.creator === creator)
+			.map((forum) => ({
+				id: forum.id.toNumber(),
+				title: forum.title,
+				date: new Date(forum.date.toNumber() * 1000).toString(),
+				description: forum.description,
+				creator: forum.creator,
+				image: forum.image,
+			}))
+		return parsedForums
+	}
 
-  const publishComment = async (forumId, commentText) => {
-    try {
-      const data = await commentForum([forumId, commentText]);
+	const getForumComments = async (forumId) => {
+		const comments = await contract.call('getForumComments', forumId)
 
-      console.log("contract call success", data);
-    } catch (error) {
-      console.log("contract call failure", error);
-    }
-  };
+		const parsedComments = comments.map((comment, i) => ({
+			text: comment.text,
+			date: new Date(comment.date.toNumber() * 1000).toString(),
+			creator: comment.creator,
+		}))
 
-  return (
-    <StateContext.Provider
-      value={{
-        address,
-        contract,
-        connect,
-        createForum: publishForum,
-        commentForum: publishComment,
-        getAllForums,
-        getForumComments,
-        getForumsByCreator,
-      }}
-    >
-      {children}
-    </StateContext.Provider>
-  );
-};
+		console.log(parsedComments)
+		return parsedComments
+	}
 
-export const useForumContext = () => useContext(StateContext);
+	const publishComment = async (forumId, commentText) => {
+		try {
+			const data = await commentForum([forumId, commentText])
+
+			console.log('contract call success', data)
+		} catch (error) {
+			console.log('contract call failure', error)
+		}
+	}
+
+	return (
+		<StateContext.Provider
+			value={{
+				address,
+				contract,
+				connect,
+				createForum: publishForum,
+				commentForum: publishComment,
+				getForum,
+				getAllForums,
+				getForumComments,
+				getForumsByCreator,
+			}}
+		>
+			{children}
+		</StateContext.Provider>
+	)
+}
+
+export const useForumContext = () => useContext(StateContext)

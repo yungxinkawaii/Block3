@@ -27,6 +27,7 @@ import {
 
 import { useForumContext } from '../context/forum'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { Link as RouterLink } from 'react-router-dom'
 
 // create comment modal
 const CommentModal = ({ forum_id }) => {
@@ -109,6 +110,8 @@ const ForumCard = ({
 						variant="ghost"
 						colorScheme="gray"
 						aria-label="See post"
+						as={RouterLink}
+						to={`/forum/${id}`}
 						icon={<ExternalLinkIcon />}
 					/>
 				</Flex>
@@ -117,7 +120,7 @@ const ForumCard = ({
 				<Heading size="s" textTransform="uppercase" pb="4">
 					{title}
 				</Heading>
-				<Image objectFit="cover" src={image} />
+				<Image objectFit="cover" src={image} w="auto" />
 				<Text noOfLines={3}>{description}</Text>
 			</CardBody>
 
