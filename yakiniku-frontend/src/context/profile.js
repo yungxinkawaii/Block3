@@ -38,6 +38,26 @@ export const ProfileContextProvider = ({ children }) => {
     }
   };
 
+  const getAddrByEmail = async (emails) => {
+
+    let retAddr = [];
+
+    // for (let i in emails){
+    //   let eachEmail = emails[i];
+    //   for ()
+    // }
+
+    try {
+      const addr = await getAddrByEmail(emails);
+
+      console.log("contract call success", addr);
+      return addr;
+    } catch (error) {
+      console.log("contract call failure", error);
+      console.log("address already exist.");
+    }
+  };
+
   const putProfile = async (form) => {
     try {
       console.log(form.name);
@@ -74,6 +94,7 @@ export const ProfileContextProvider = ({ children }) => {
         createProfile: publishProfile,
         updateProfile: putProfile,
         getProfile,
+        getAddrByEmail,
       }}
     >
       {children}
