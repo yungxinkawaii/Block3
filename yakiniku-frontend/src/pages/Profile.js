@@ -260,9 +260,9 @@ const Profile = () => {
 					</form>
 				</Box>
 			) : (
-				<>
+				<Flex flexDir={{ base: 'column', md: 'row' }} w="100%">
 					<Box
-						maxW="320px"
+						maxW={{ base: 'full', md: '360px' }}
 						w="full"
 						boxShadow="2xl"
 						rounded="lg"
@@ -270,7 +270,7 @@ const Profile = () => {
 						borderColor="gray.600"
 						p={6}
 						textAlign="center"
-						me="4"
+						me={{ base: '0', md: '4' }}
 						h="100%"
 					>
 						<Avatar
@@ -311,7 +311,7 @@ const Profile = () => {
 							</Badge>
 						</Stack>
 					</Box>
-					<Box width="75%">
+					<Box w={{ base: 'full', md: '75%' }} mt={{ base: 4, md: 0 }}>
 						<Tabs variant="enclosed">
 							<TabList>
 								<Tab>Forum</Tab>
@@ -358,7 +358,7 @@ const Profile = () => {
 							</TabPanels>
 						</Tabs>
 					</Box>
-				</>
+				</Flex>
 			)}
 		</Flex>
 	)

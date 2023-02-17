@@ -17,7 +17,7 @@ const ProfileCard = () => {
 
 	if (!address) {
 		return (
-			<Box maxW="320px" w="full" p={6}>
+			<Box maxW={{ base: 'full', md: '360px' }} w="full" p={6}>
 				<Text textAlign="center" color="gray.400">
 					Please connect your wallet.
 				</Text>
@@ -25,7 +25,7 @@ const ProfileCard = () => {
 		)
 	} else if (!profile.name) {
 		return (
-			<Box maxW="320px" w="full" p={6}>
+			<Box maxW={{ base: 'full', md: '360px' }} w="full" p={6}>
 				<Text textAlign="center" color="gray.400">
 					No profile found for this address.
 				</Text>
@@ -35,7 +35,7 @@ const ProfileCard = () => {
 
 	return (
 		<Box
-			maxW="320px"
+			maxW={{ base: 'full', md: '360px' }}
 			w="full"
 			boxShadow="2xl"
 			rounded="lg"
@@ -43,7 +43,6 @@ const ProfileCard = () => {
 			borderColor="gray.600"
 			p={6}
 			textAlign="center"
-			me="4"
 		>
 			<Avatar
 				size="xl"
