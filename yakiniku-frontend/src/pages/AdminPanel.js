@@ -187,7 +187,7 @@ export default function AdminPanel() {
 	if (!dataFetched) {
 		setTimeout(() => {
 			callGetAllNFTs()
-		}, 1000)
+		}, 2000)
 	}
 
 	return (
