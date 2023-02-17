@@ -1,4 +1,4 @@
-export const makeIndexArr = async (addr) => {
+export const makeIndexArr = (addr) => {
   let retIdx = [];
   let accLength = 0;
   for (let i = 0; i < addr.length; i++) {
@@ -6,4 +6,9 @@ export const makeIndexArr = async (addr) => {
     retIdx.push(accLength);
   }
   return retIdx;
+};
+
+export const flatten = (arr) => {
+  let newArr = Array.prototype.concat.apply([], arr);
+  return newArr;
 };

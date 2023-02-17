@@ -9,6 +9,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { ProfileContextProvider } from "./context/profile";
 import { ForumContextProvider } from "./context/forum";
 import { NftMarketplaceContextProvider } from "./context/nftMarketplace";
+import { RwdContextProvider } from "./context/rwd";
 
 // This is the chainId your dApp will work on.
 // const activeChainId = ChainId.Mainnet;
@@ -23,7 +24,9 @@ root.render(
         <ProfileContextProvider>
           <ForumContextProvider>
             <NftMarketplaceContextProvider>
-              <App />
+              <RwdContextProvider>
+                <App />
+              </RwdContextProvider>
             </NftMarketplaceContextProvider>
           </ForumContextProvider>
         </ProfileContextProvider>
