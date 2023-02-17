@@ -49,7 +49,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
           image: meta.image,
           name: meta.name,
           description: meta.description,
-          mintValues: meta.mintValArr,
+          // mintValues: meta.mintValArr,
         };
         sumPrice += Number(price);
         return item;
@@ -84,7 +84,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
           image: meta.image,
           name: meta.name,
           description: meta.description,
-          mintValues: meta.mintValArr,
+          // mintValues: meta.mintValArr,
         };
         return item;
       })
