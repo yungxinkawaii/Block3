@@ -29,6 +29,11 @@ contract NFTMarketplace is ERC721URIStorage {
         bool currentlyListed;
     }
 
+    struct RedeemDetails{
+        uint256[] mintVal;
+        uint32[] redeemCodes;
+    }
+
     struct MintToken {
         uint256 tokenId;
         uint256 mintValue;
@@ -47,7 +52,11 @@ contract NFTMarketplace is ERC721URIStorage {
         address owner,
         address seller,
         uint256 price,
-        bool currentlyListed,
+        bool currentlyListed
+    );
+
+    event TokenIssuedSuccess (
+        uint256 indexed tokenId,
         uint256[] mintVal,
         uint32[] redeemCodes
     );
@@ -56,6 +65,9 @@ contract NFTMarketplace is ERC721URIStorage {
 
     //tokenId to NFT
     mapping(uint256 => ListedToken) private idToListedToken;
+
+    //tokenId to NFT Redeem Details
+    mapping(uint256 => RedeemDetails) private idToRedeemDetails;
 
     // redeem code to mint token
     mapping(uint32 => MintToken) private codeToMintToken;
@@ -86,12 +98,16 @@ contract NFTMarketplace is ERC721URIStorage {
         return idToListedToken[tokenId];
     }
 
+    function getRedeemDetailsForId(uint256 tokenId) public view returns (RedeemDetails memory) {
+        return idToRedeemDetails[tokenId];
+    }
+
     function getCurrentToken() public view returns (uint256) {
         return _tokenIds.current();
     }
 
     //The first time a token is created, it is listed here
-    function createToken(string memory tokenURI, uint256 price, uint256[] memory mintVal) public payable returns (uint) {
+    function createToken(string memory tokenURI, uint256 price) public payable returns (uint) {
         //Increment the tokenId counter, which is keeping track of the number of minted NFTs
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
@@ -103,28 +119,16 @@ contract NFTMarketplace is ERC721URIStorage {
         _setTokenURI(newTokenId, tokenURI);
 
         //Helper function to update Global variables and emit an event
-        createListedToken(newTokenId, price, mintVal);
+        createListedToken(newTokenId, price);
 
         return newTokenId;
     }
 
-    function createListedToken(uint256 tokenId, uint256 price, uint256[] memory mintVal) private {
+    function createListedToken(uint256 tokenId, uint256 price) private {
         //Make sure the sender sent enough ETH to pay for listing
         require(msg.value == listPrice, "Hopefully sending the correct price");
         //Just sanity check
         require(price > 0, "Make sure the price isn't negative");
-
-        /* Generate Random String Coupon code */
-        uint32[] memory redeemCodes = new uint32[](mintVal.length);
-        for(uint i = 0; i < mintVal.length; i++)
-        {
-            uint32 code = uint32(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, tokenId, mintVal[i])))%2000000000);
-            codeToMintToken[code] = MintToken({
-                tokenId: tokenId,
-                mintValue: mintVal[i]
-            });
-            redeemCodes[i] = code;
-        }
 
         //Update the mapping of tokenId's to Token details, useful for retrieval functions
         idToListedToken[tokenId] = ListedToken({
@@ -148,9 +152,7 @@ contract NFTMarketplace is ERC721URIStorage {
             address(this),
             msg.sender,
             price,
-            true,
-            mintVal,
-            redeemCodes
+            true
         );
     }
     
@@ -220,23 +222,59 @@ contract NFTMarketplace is ERC721URIStorage {
         return redeemStates[getRedeemStatesLen(tokenId) - 1];
     }
 
-    function issueNFT(uint256 tokenId, address[] memory walletAddr) public{
-        for (uint i = 0; i < walletAddr.length; i++){
+    function issueNFT(uint256 tokenId, address[] memory walletAddr, uint256[] memory idxArr, uint256[] memory mintVal) public{
+        /* Generate Random String Coupon code */
+        uint32[] memory redeemCodes = new uint32[](mintVal.length);
+        for(uint i = 0; i < mintVal.length; i++)
+        {
+            uint32 code = uint32(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, tokenId, mintVal[i])))%2000000000);
+            codeToMintToken[code] = MintToken({
+                tokenId: tokenId,
+                mintValue: mintVal[i]
+            });
+            redeemCodes[i] = code;
+        }
+
+        idToRedeemDetails[tokenId] = RedeemDetails({
+            mintVal: mintVal,
+            redeemCodes: redeemCodes
+        });
+
+        _categorizeNFT(tokenId, walletAddr, idxArr, mintVal);
+
+        emit TokenIssuedSuccess(
+            tokenId,
+            mintVal,
+            redeemCodes);
+    }
+
+    function _categorizeNFT(uint256 tokenId, address[] memory walletAddr, uint256[] memory idxArr, uint256[] memory mintVal) private{
+        uint256 startIdx = 0;
+        for (uint256 i = 0; i < idxArr.length; i++) {
+            uint256 index = idxArr[i];
+            if (i == idxArr.length - 1) {
+                uint256 diff = idxArr[idxArr.length - 1] - idxArr[idxArr.length - 2];
+                startIdx = index - diff;
+            }
+            for (uint256 j = startIdx; j < index; j++){
             nftOwners[walletAddr[i]][tokenId].push(NFTRedeemState({
                     issueDate: block.timestamp, 
-                    mintValue: 0, 
+                    mintValue: mintVal[i], 
                     hasRedeemed: false
-                    }));
+            }));
+            }
+            startIdx += index;
         }
     }
 
-    function redeemNFT(uint256 tokenId, uint32 redeemCode) public{
-        require(codeToMintToken[redeemCode].tokenId == tokenId, "1. Invalid Redeem Code for NFT");
-        require(checkWalletNFT(tokenId) && !((getLastRedeemState(tokenId)).hasRedeemed), "2. Invalid Redeem Code for NFT");
+    function redeemNFT(uint32 redeemCode) public{
+        require(codeToMintToken[redeemCode].mintValue > 0, "1. Invalid Redeem Code for NFT");
 
+        uint256 tokenId = codeToMintToken[redeemCode].tokenId;
         uint256 mintValue = codeToMintToken[redeemCode].mintValue;
+        require(checkWalletNFT(tokenId) && (getLastRedeemState(tokenId)).mintValue == mintValue && !((getLastRedeemState(tokenId)).hasRedeemed), "2. Invalid Redeem Code for NFT");
+
         uint256 redeemStatesLen = (nftOwners[msg.sender][tokenId]).length;
-        nftOwners[msg.sender][tokenId][redeemStatesLen - 1].mintValue = mintValue;
         nftOwners[msg.sender][tokenId][redeemStatesLen - 1].hasRedeemed = true;
 
         uint256 oldBalance = rwdToken.balanceOf(msg.sender);
