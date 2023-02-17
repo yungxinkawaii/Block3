@@ -18,6 +18,7 @@ import {
 import { useLocation } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useNftMarketplaceContext } from "../context/nftMarketplace";
+import { useProfileContext } from "../context/profile";
 import { makeIndexArr, flatten } from "../utils/arr_process";
 
 const Tags = (props) => {
@@ -82,6 +83,7 @@ export default function IssueNFT() {
   console.log(nftDetails);
 
   const { issueNFT } = useNftMarketplaceContext();
+  const { getAddrByEmail } = useProfileContext();
 
   const handleAddGroup = () => {
     if (groups.length < 3) {
@@ -120,13 +122,14 @@ export default function IssueNFT() {
     let mintValArr = groups.map((group) => parseInt(group.mintValue));
     console.log(mintValArr);
 
-    let emails = [
-      ["xinlelam1030@gmail.com"],
-      ["xinlelam699@gmail.com"],
-      ["happinessas47164@gmail.com"],
-    ];
+    // let emails = [
+    //   ["xinlelam1030@gmail.com"],
+    //   ["xinlelam699@gmail.com"],
+    //   ["happinessas47164@gmail.com"],
+    // ];
 
-    
+    // let connectedAddresses = getAddrByEmail(emails);
+    // console.log(connectedAddresses);
 
     // let mintValArr = [10, 20, 30];
     let connectedAddresses = [
