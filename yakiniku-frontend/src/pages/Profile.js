@@ -49,7 +49,8 @@ const RedeemNFTModal = () => {
 		event.preventDefault()
 		//convert voucherCode into string
 		let voucherCodeInt = parseInt(voucherCode)
-		await redeemNFT(15, voucherCodeInt)
+		let transaction = await redeemNFT(voucherCodeInt)
+		console.log(transaction)
 	}
 
 	return (
@@ -194,7 +195,7 @@ const Profile = () => {
 	return (
 		<Flex flexDir={'col'} w="100%">
 			{/* if profile does not exist, show form */}
-			{!profile.name ? (
+			{profile.name ? (
 				<Box
 					rounded={'lg'}
 					bg="white"
