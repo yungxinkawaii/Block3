@@ -264,6 +264,7 @@ const Profile = () => {
 					<Box
 						maxW={{ base: 'full', md: '360px' }}
 						w="full"
+						h="fit-content"
 						boxShadow="2xl"
 						rounded="lg"
 						border="1px"
@@ -271,7 +272,6 @@ const Profile = () => {
 						p={6}
 						textAlign="center"
 						me={{ base: '0', md: '4' }}
-						h="100%"
 					>
 						<Avatar
 							size="xl"

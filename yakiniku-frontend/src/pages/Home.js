@@ -121,7 +121,11 @@ export default function Home() {
 						))
 				)}
 			</Stack>
-			<Flex width={{ base: '100%', md: '25%' }} order={{ base: '-1', md: '0' }}>
+			<Flex
+				width={{ base: '100%', md: '25%' }}
+				h="fit-content"
+				order={{ base: '-1', md: '0' }}
+			>
 				<ProfileCard />
 			</Flex>
 		</Flex>
