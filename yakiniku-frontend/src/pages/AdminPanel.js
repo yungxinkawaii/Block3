@@ -53,7 +53,7 @@ const AddNFTModal = () => {
   }
 
   //This function uploads the metadata to IPDS
-  async function uploadMetadataToIPFS(mintValArr) {
+  async function uploadMetadataToIPFS() {
     const { name, description, price } = formParams;
     //Make sure that none of the fields are empty
     if (!name || !description || !price || !fileURL) return;
@@ -62,7 +62,6 @@ const AddNFTModal = () => {
       name,
       description,
       price,
-      mintValArr,
       image: fileURL,
     };
 
@@ -88,17 +87,10 @@ const AddNFTModal = () => {
     e.preventDefault();
     try {
       updateMessage("Please wait.. uploading (upto 5 mins)");
-      const metadataURL = await uploadMetadataToIPFS(mintValArr);
+      const metadataURL = await uploadMetadataToIPFS();
 
-      let nftListed = await listNFT(metadataURL, formParams.price, mintValArr);
+      let nftListed = await listNFT(metadataURL, formParams.price);
       console.log(nftListed);
-      let eventDetails = nftListed.receipt.events[0].args;
-      let redeemDetails = {};
-      for (let i in mintValArr) {
-        redeemDetails[mintValArr[i]] = eventDetails.redeemCodes[i];
-      }
-      console.log(redeemDetails);
-      console.log(nftListed.logs);
 
       alert("Successfully listed your NFT!");
       updateMessage("");
