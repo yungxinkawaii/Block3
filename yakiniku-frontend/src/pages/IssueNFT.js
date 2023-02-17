@@ -120,6 +120,14 @@ export default function IssueNFT() {
     let mintValArr = groups.map((group) => parseInt(group.mintValue));
     console.log(mintValArr);
 
+    let emails = [
+      ["xinlelam1030@gmail.com"],
+      ["xinlelam699@gmail.com"],
+      ["happinessas47164@gmail.com"],
+    ];
+
+    
+
     // let mintValArr = [10, 20, 30];
     let connectedAddresses = [
       ["0x1e84F443fB8f0D9DC868F95d8f675a706a9268AF"],
