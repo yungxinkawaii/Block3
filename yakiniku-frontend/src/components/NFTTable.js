@@ -31,7 +31,8 @@ const NFTTable = ({ nftData }) => {
 							<Th>Name</Th>
 							<Th>Description</Th>
 							<Th isNumeric>Price</Th>
-							<Th>Link</Th>
+							<Th>Owner</Th>
+							<Th>Seller</Th>
 							<Th>Issue</Th>
 						</Tr>
 					</Thead>
@@ -47,9 +48,20 @@ const NFTTable = ({ nftData }) => {
 										<Link
 											textDecoration={'underline'}
 											color={'teal.500'}
-											href={`/nft`}
+											href={`https://explorer.public.zkevm-test.net/address/${data.owner}`}
 										>
-											0x123 ... 456
+											{data.owner.slice(0, 4)}
+											...{data.owner.slice(-4)}
+										</Link>
+									</Td>
+									<Td>
+										<Link
+											textDecoration={'underline'}
+											color={'teal.500'}
+											href={`https://explorer.public.zkevm-test.net/address/${data.seller}`}
+										>
+											{data.seller.slice(0, 4)}
+											...{data.seller.slice(-4)}
 										</Link>
 									</Td>
 									<Td>
