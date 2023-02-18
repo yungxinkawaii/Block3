@@ -31,7 +31,6 @@ const AddNFTModal = () => {
 	})
 	const [fileURL, setFileURL] = useState(null)
 	const [message, updateMessage] = useState('')
-	let mintVal = [10, 20, 30]
 
 	const { listNFT } = useNftMarketplaceContext()
 
@@ -62,7 +61,6 @@ const AddNFTModal = () => {
 			name,
 			description,
 			price,
-			mintVal,
 			image: fileURL,
 		}
 
@@ -84,16 +82,9 @@ const AddNFTModal = () => {
 			updateMessage('Please wait.. uploading (upto 5 mins)')
 			const metadataURL = await uploadMetadataToIPFS()
 
-			let nftListed = await listNFT(metadataURL, formParams.price, mintVal)
-			console.log(nftListed)
-			let eventDetails = nftListed.receipt.events[0].args
-			let redeemDetails = {}
-			for (let i in mintVal) {
-				redeemDetails[mintVal[i]] = eventDetails.redeemCodes[i]
-			}
-			console.log(redeemDetails)
-			console.log(nftListed.logs)
-
+			let nftListed = await listNFT(metadataURL, formParams.price)
+			console.log(nftListed);
+			
 			alert('Successfully listed your NFT!')
 			updateMessage('')
 			updateFormParams({ name: '', description: '', price: '' })
