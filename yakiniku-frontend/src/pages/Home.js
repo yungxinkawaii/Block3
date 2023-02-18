@@ -61,8 +61,13 @@ export default function Home() {
 	}
 
 	return (
-		<Flex flexDir={'col'} w="100%">
-			<Stack width="75%" spacing="4" pe="4">
+		<Flex flexDir={{ base: 'column', md: 'row' }} w="100%">
+			<Stack
+				width={{ base: '100%', md: '75%' }}
+				spacing="4"
+				pe={{ base: '0', md: '4' }}
+				py={{ base: '4', md: '0' }}
+			>
 				<Card maxW="full" variant={'elevated'}>
 					<CardBody py="2">
 						<Heading size="md" py="4">
@@ -99,24 +104,29 @@ export default function Home() {
 				{loading ? (
 					<Spinner size="xl" />
 				) : (
-					forums.map((forum) => (
-						<ForumCard
-							username={forum.username}
-							creator={forum.creator}
-							id={forum.id}
-							key={forum.id}
-							title={forum.title}
-							description={forum.description}
-							image={forum.image}
-							onClick={() => handleNavigate(forum)}
-						/>
-					))
+					forums
+						.slice()
+						.reverse()
+						.map((forum) => (
+							<ForumCard
+								username={forum.username}
+								creator={forum.creator}
+								id={forum.id}
+								key={forum.id}
+								title={forum.title}
+								description={forum.description}
+								image={forum.image}
+								onClick={() => handleNavigate(forum)}
+							/>
+						))
 				)}
 			</Stack>
-			<Flex width="25%">
-				<Stack>
-					<ProfileCard />
-				</Stack>
+			<Flex
+				width={{ base: '100%', md: '25%' }}
+				h="fit-content"
+				order={{ base: '-1', md: '0' }}
+			>
+				<ProfileCard />
 			</Flex>
 		</Flex>
 	)

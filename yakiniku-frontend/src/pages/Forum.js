@@ -10,14 +10,19 @@ import {
 	CardHeader,
 	Flex,
 	Heading,
+	HStack,
 	Image,
+	Stack,
+	StackDivider,
 	Text,
 } from '@chakra-ui/react'
 
 const Forum = () => {
 	const [comments, setComments] = useState([])
-	const [forum, setForum] = useState({})
-	const { getForumComments, commentForum, getForum } = useForumContext()
+	const [forum, setForum] = useState({
+		creator: '',
+	})
+	const { getForumComments, getForum } = useForumContext()
 
 	const { forumID } = useParams()
 
@@ -39,7 +44,6 @@ const Forum = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const result = await getForumComments(parseInt(forumID))
-			console.log(result)
 			setComments(result)
 		}
 
@@ -58,39 +62,72 @@ const Forum = () => {
 	// }
 
 	return (
-		<Card maxW="full">
-			<CardHeader>
-				<Flex spacing="4">
-					<Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-						<Avatar src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix" />
-						<Box>
-							<Heading size="sm">
-								{/* {forum.creator.substr(0, 6)}
-								...
-								{forum.creator.substr(-4)} */}
-							</Heading>
-						</Box>
+		<>
+			<Card maxW="full">
+				<CardHeader>
+					<Flex spacing="4">
+						<Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+							<Avatar src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix" />
+							<Box>
+								<Heading size="sm">
+									{forum.creator.substr(0, 6)}
+									...
+									{forum.creator.substr(-4)}
+								</Heading>
+							</Box>
+						</Flex>
 					</Flex>
-				</Flex>
-			</CardHeader>
-			<CardBody py="2">
-				<Heading size="s" textTransform="uppercase" pb="4">
-					{forum.title}
-				</Heading>
-				<Image objectFit="cover" src={forum.image} />
-				<Text noOfLines={3}>{forum.description}</Text>
-			</CardBody>
+				</CardHeader>
+				<CardBody py="2">
+					<Heading size="s" textTransform="uppercase" pb="4">
+						{forum.title}
+					</Heading>
+					<Image objectFit="cover" src={forum.image} />
+					<Text noOfLines={3}>{forum.description}</Text>
+				</CardBody>
 
-			<CardFooter
-				justify="space-between"
-				flexWrap="wrap"
-				sx={{
-					'& > button': {
-						minW: '136px',
-					},
-				}}
-			/>
-		</Card>
+				<CardFooter
+					justify="space-between"
+					flexWrap="wrap"
+					sx={{
+						'& > button': {
+							minW: '136px',
+						},
+					}}
+				/>
+			</Card>
+			<Card mt="4">
+				<CardHeader>
+					<Heading size="md">Comment Section</Heading>
+				</CardHeader>
+
+				<CardBody>
+					<Stack divider={<StackDivider />} spacing="4">
+						{comments.map((comment) => {
+							return (
+								<Box>
+									<HStack mb="2">
+										<Avatar
+											src="https://api.dicebear.com/5.x/thumbs/svg?seed=Felix"
+											size={'sm'}
+										/>
+										<Heading size="xs" textTransform="uppercase">
+											{comment.creator.substr(0, 6)}
+											...
+											{comment.creator.substr(-4)}
+										</Heading>
+									</HStack>
+
+									<Text pt="2" fontSize="sm">
+										{comment.text}
+									</Text>
+								</Box>
+							)
+						})}
+					</Stack>
+				</CardBody>
+			</Card>
+		</>
 	)
 }
 
