@@ -30,7 +30,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
 
     const items = await Promise.all(
       transaction.map(async (i) => {
-        const tokenURI = await contract.tokenURI(i.tokenId);
+        const tokenURI = await contract.call("tokenURI", i.tokenId);
         console.log(tokenURI);
         let meta = await axios.get(tokenURI, {
           headers: {
@@ -43,6 +43,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
         let price = ethers.utils.formatUnits(i.price.toString(), "ether");
         let item = {
           price,
+          metadataURL: tokenURI,
           tokenId: i.tokenId.toNumber(),
           seller: i.seller,
           owner: i.owner,
@@ -55,11 +56,13 @@ export const NftMarketplaceContextProvider = ({ children }) => {
         return item;
       })
     );
+    console.log(items);
     return items;
   };
 
   const getAllNFTs = async () => {
     const transaction = await contract.call("getAllNFTs");
+    console.log(transaction);
 
     //Fetch all the details of every NFT from the contract and display
     const items = await Promise.all(
@@ -89,7 +92,7 @@ export const NftMarketplaceContextProvider = ({ children }) => {
         return item;
       })
     );
-
+    console.log(items);
     return items;
   };
 
