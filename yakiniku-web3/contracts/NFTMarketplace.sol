@@ -61,7 +61,7 @@ contract NFTMarketplace is ERC721URIStorage {
         uint32[] redeemCodes
     );
 
-    event NFTRedeemed(address user, uint256 tokenId, uint32 redeemCode, uint256 mintValue, uint256 redeemStatesLen, uint256 oldBalance, uint256 newBalance);
+    event NFTRedeemed(address user, uint256 tokenId, uint32 redeemCode, uint256 mintValue, uint256 redeemStatesLen, uint256 oldBalance, uint256 newBalance, uint index, bool hasRedeemed);
 
     //tokenId to NFT
     mapping(uint256 => ListedToken) private idToListedToken;
@@ -105,6 +105,8 @@ contract NFTMarketplace is ERC721URIStorage {
     function getCurrentToken() public view returns (uint256) {
         return _tokenIds.current();
     }
+
+
 
     //The first time a token is created, it is listed here
     function createToken(string memory tokenURI, uint256 price) public payable returns (uint) {
@@ -174,6 +176,47 @@ contract NFTMarketplace is ERC721URIStorage {
         //the array 'tokens' has the list of all NFTs in the marketplace
         return tokens;
     }
+
+    function checkOwner(uint256 tokenId) public view returns (bool){
+        return idToListedToken[tokenId].owner == msg.sender;
+    }
+
+    function checkSeller(uint256 tokenId) public view returns (bool){
+        return idToListedToken[tokenId].seller == msg.sender;
+    }
+
+    function checkIssue(uint256 tokenId) public view returns (bool){
+        return (checkWalletNFT(tokenId) && getFirstOccuringRedeemState(tokenId));
+    }
+
+    function getOwner(uint256 tokenId) public view returns (address){
+        return idToListedToken[tokenId].owner;
+    }
+
+    function getSeller(uint256 tokenId) public view returns (address){
+        return idToListedToken[tokenId].seller;
+    }
+
+    function getIssue1(uint256 tokenId) public view returns (uint256){
+        NFTRedeemState[] memory redeemStates = nftOwners[msg.sender][tokenId];
+        return redeemStates.length;
+    }
+
+    function getIssue1_2(uint256 tokenId) public view returns (NFTRedeemState[] memory){
+        return nftOwners[msg.sender][tokenId];
+    }
+
+    function getIssue1_3(uint256 tokenId) public view returns (NFTRedeemState memory){
+        return nftOwners[msg.sender][tokenId][0];
+    }
+
+    function getIssue1_5(uint256 tokenId) public view returns (uint256){
+        return (nftOwners[msg.sender][tokenId][0]).issueDate;
+    }
+
+    function getIssue2(uint256 tokenId) public view returns (bool){
+        return getFirstOccuringRedeemState(tokenId);
+    }
     
     //Returns all the NFTs that the current user is owner or seller in
     function getMyNFTs() public view returns (ListedToken[] memory) {
@@ -184,7 +227,7 @@ contract NFTMarketplace is ERC721URIStorage {
         //Important to get a count of all the NFTs that belong to the user before we can make an array for them
         for(uint i=0; i < totalItemCount; i++)
         {
-            if(idToListedToken[i+1].owner == msg.sender || idToListedToken[i+1].seller == msg.sender || (checkWalletNFT(i + 1) && getFirstOccuringRedeemState(i+1))){
+            if(checkOwner(i + 1) || checkSeller(i + 1) || checkIssue(i + 1)){
                 itemCount += 1;
             }
         }
@@ -192,7 +235,7 @@ contract NFTMarketplace is ERC721URIStorage {
         //Once you have the count of relevant NFTs, create an array then store all the NFTs in it
         ListedToken[] memory items = new ListedToken[](itemCount);
         for(uint i=0; i < totalItemCount; i++) {
-            if(idToListedToken[i+1].owner == msg.sender || idToListedToken[i+1].seller == msg.sender || (checkWalletNFT(i + 1) && getFirstOccuringRedeemState(i+1))){
+            if(checkOwner(i + 1) || checkSeller(i + 1) || checkIssue(i + 1)){
                 currentId = i+1;
                 ListedToken storage currentItem = idToListedToken[currentId];
                 items[currentIndex] = currentItem;
@@ -257,11 +300,11 @@ contract NFTMarketplace is ERC721URIStorage {
                 startIdx = index - diff;
             }
             for (uint256 j = startIdx; j < index; j++){
-            nftOwners[walletAddr[i]][tokenId].push(NFTRedeemState({
-                    issueDate: block.timestamp, 
-                    mintValue: mintVal[i], 
-                    hasRedeemed: false
-            }));
+                nftOwners[walletAddr[j]][tokenId].push(NFTRedeemState({
+                        issueDate: block.timestamp, 
+                        mintValue: mintVal[i], 
+                        hasRedeemed: false
+                }));
             }
             startIdx += index;
         }
@@ -281,10 +324,11 @@ contract NFTMarketplace is ERC721URIStorage {
         rwdToken.transfer(msg.sender, mintValue);
         uint256 newBalance = rwdToken.balanceOf(msg.sender);
 
-        emit NFTRedeemed(msg.sender, tokenId, redeemCode, mintValue, redeemStatesLen, oldBalance, newBalance);
+        emit NFTRedeemed(msg.sender, tokenId, redeemCode, mintValue, redeemStatesLen, oldBalance, newBalance, redeemStatesLen - 1, nftOwners[msg.sender][tokenId][redeemStatesLen - 1].hasRedeemed);
     }
 
     function checkWalletNFT(uint256 tokenId) public view returns (bool) {
-        return (nftOwners[msg.sender][tokenId]).length > 0;
+        NFTRedeemState[] memory redeemStates = nftOwners[msg.sender][tokenId];
+        return redeemStates.length > 0;
     }
 }
