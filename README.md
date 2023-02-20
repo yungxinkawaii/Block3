@@ -1,5 +1,6 @@
 # Block 3
 Block 3 is a decentralized social platform designed for university students to connect, share ideas, and celebrate their academic achievements. Powered by the [Polygon zk-EVM](https://polygon.technology/solutions/polygon-zkevm/) network, our platform offers a secure and anonymous online space where students can openly discuss academic and non-academic topics, and earn NFT badges for their academic achievements.
+Check out more about the project [here](https://devpost.com/software/block-3)!
 
 ## What it does
 Block 3 is a social platform for university students that allows them to freely express their ideas, opinions, and interests in a secure and anonymous online space. The platform features a forum for open discussion, a Metamask wallet integration for secure transactions, and NFT badges for academic achievements. With Block 3, students can connect with their peers, celebrate their wins, and build a stronger sense of community within their university.
